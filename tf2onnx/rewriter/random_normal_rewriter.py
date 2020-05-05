@@ -46,7 +46,7 @@ def rewrite_random_normal(g, ops):
             print("make_node RandomNormalLike")
             logger.info("make_node RandomNormalLike")
             new_node = g.make_node("RandomNormalLike", [shape_node.input[0]], outputs=[out_name], name=op_name,
-                                   attr={"mean": 0.0, "scale": 1.0, "dtype": dtype, "seed": seed})
+                                   attr={"mean": 0.0, "scale": 1.0, "dtype": dtype})
         else:
             shape = g.get_shape(output.output[0])
             print("make_node RandomNormal")
@@ -60,7 +60,7 @@ def rewrite_random_normal(g, ops):
             logger.info("seed")
             logger.info(seed)
             new_node = g.make_node("RandomNormal", [], outputs=[out_name], name=op_name,
-                                   attr={"shape": shape, "mean": 0.0, "scale": 1.0, "dtype": dtype, "seed": seed})
+                                   attr={"shape": shape, "mean": 0.0, "scale": 1.0, "dtype": dtype})
 
         g.replace_all_inputs(ops, output.output[0], new_node.output[0])
         g.safe_remove_nodes(match.get_nodes())
