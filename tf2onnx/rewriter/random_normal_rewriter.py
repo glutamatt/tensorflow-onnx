@@ -7,7 +7,9 @@ tf2onnx.rewriter - rewrite tensorflow subgraph to onnx random normal op
 
 from tf2onnx import utils
 from tf2onnx.graph_matcher import OpTypePattern, GraphMatcher
+from tf2onnx import constants, logging
 
+logger = logging.getLogger(__name__)
 
 # pylint: disable=missing-docstring
 
@@ -22,6 +24,7 @@ def rewrite_random_normal(g, ops):
 
     matcher = GraphMatcher(pattern)
     match_results = list(matcher.match_ops(ops))
+    logger.info("===========RandomStandardNormal===============")
     for match in match_results:
         output = match.get_op('output')
         mean = output.inputs[1].get_tensor_value()
@@ -34,11 +37,13 @@ def rewrite_random_normal(g, ops):
         if rn_op.inputs[0].type == "Shape":
             shape_node = rn_op.inputs[0]
             print("make_node RandomNormalLike")
+            logger.info("make_node RandomNormalLike")
             new_node = g.make_node("RandomNormalLike", [shape_node.input[0]], outputs=[out_name], name=op_name,
                                    attr={"mean": mean, "scale": 1.0, "dtype": dtype, "seed": seed})
         else:
             shape = g.get_shape(output.output[0])
             print("make_node RandomNormal")
+            logger.info("make_node RandomNormalLike")
             new_node = g.make_node("RandomNormal", [], outputs=[out_name], name=op_name,
                                    attr={"shape": shape, "mean": mean, "scale": 1.0, "dtype": dtype, "seed": seed})
 
