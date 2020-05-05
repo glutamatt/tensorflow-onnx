@@ -33,10 +33,12 @@ def rewrite_random_normal(g, ops):
         seed = rn_op.get_attr('seed2').i
         if rn_op.inputs[0].type == "Shape":
             shape_node = rn_op.inputs[0]
+            print("make_node RandomNormalLike")
             new_node = g.make_node("RandomNormalLike", [shape_node.input[0]], outputs=[out_name], name=op_name,
                                    attr={"mean": mean, "scale": 1.0, "dtype": dtype, "seed": seed})
         else:
             shape = g.get_shape(output.output[0])
+            print("make_node RandomNormal")
             new_node = g.make_node("RandomNormal", [], outputs=[out_name], name=op_name,
                                    attr={"shape": shape, "mean": mean, "scale": 1.0, "dtype": dtype, "seed": seed})
 
