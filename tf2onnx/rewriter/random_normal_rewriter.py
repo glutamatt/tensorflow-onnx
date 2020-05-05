@@ -25,6 +25,10 @@ def rewrite_random_normal(g, ops):
     matcher = GraphMatcher(pattern)
     match_results = list(matcher.match_ops(ops))
     logger.info("===========RandomStandardNormal===============")
+    logger.info(">>>")
+    logger.info("ops")
+    logger.info(ops)
+    
     for match in match_results:
         output = match.get_op('output')
         mean = output.inputs[1].get_tensor_value()
@@ -34,6 +38,9 @@ def rewrite_random_normal(g, ops):
 
         rn_op = match.get_op('input1')
         seed = rn_op.get_attr('seed2').i
+        logger.info(rn_op.inputs)
+        logger.info(rn_op.inputs[0])
+        logger.info(rn_op.inputs[0].type)
         if rn_op.inputs[0].type == "Shape":
             shape_node = rn_op.inputs[0]
             print("make_node RandomNormalLike")
@@ -43,7 +50,15 @@ def rewrite_random_normal(g, ops):
         else:
             shape = g.get_shape(output.output[0])
             print("make_node RandomNormal")
-            logger.info("make_node RandomNormalLike")
+            logger.info("make_node RandomNormal")
+            logger.info("shape")
+            logger.info(shape)
+            logger.info("mean")
+            logger.info(mean)
+            logger.info("dtype")
+            logger.info(dtype)
+            logger.info("seed")
+            logger.info(seed)
             new_node = g.make_node("RandomNormal", [], outputs=[out_name], name=op_name,
                                    attr={"shape": shape, "mean": mean, "scale": 1.0, "dtype": dtype, "seed": seed})
 
